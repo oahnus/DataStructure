@@ -2,9 +2,6 @@ package Graph;
 
 import java.util.Arrays;
 
-/**
- * Created by oahnus on 2016/8/6.
- */
 public class MGraph {
     public int[] vertex;
     public int[][] arc;
