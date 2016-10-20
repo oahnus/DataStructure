@@ -23,35 +23,27 @@ public class QuickSort {
     }
 
     private int part(int[] src,int start,int end){
-        int i=start,j=end;
-        while(i<j){
-            while(i<j&&src[i]<=src[j])
-                j--;
-            if(i<j){
-                int t = src[i];
-                src[i] = src[j];
-                src[j] = t;
-                i++;
-                for(int n=0;n<src.length;n++){
-                    System.out.print(" "+src[n]);
-                }
-                System.out.println();
+        int left=start,right=end;
+        while(left<right){
+            while(left<right&&src[left]<=src[right])
+                right--;
+            if(left<right){
+                int t = src[left];
+                src[left] = src[right];
+                src[right] = t;
+                left++;
             }
 
-            while(i<j&&src[i]<=src[j])
-                i++;
-            if(i<j){
-                int t = src[i];
-                src[i] = src[j];
-                src[j] = t;
-                j--;
-                for(int n=0;n<src.length;n++){
-                    System.out.print(" "+src[n]);
-                }
-                System.out.println();
+            while(left<right&&src[left]<=src[right])
+                left++;
+            if(left<right){
+                int t = src[left];
+                src[left] = src[right];
+                src[right] = t;
+                right--;
             }
         }
-        return i;
+        return left;
     }
 
     public static void main(String[] args){
