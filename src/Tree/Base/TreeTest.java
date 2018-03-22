@@ -1,7 +1,6 @@
 package Tree.Base;
 
 
-import org.junit.Test;
 
 /**
  * Created by oahnus on 2018/3/21
@@ -96,7 +95,45 @@ public class TreeTest {
         }
     }
 
-    @Test
+    public static TreeNode findMax(TreeNode node) {
+        if (node == null) {
+            return null;
+        }
+        return node.right == null ? node : findMax(node.right);
+    }
+
+    public static void delete(TreeNode node, int val) {
+        if (node == null) {
+            return;
+        }
+        if (node.val > val) {
+            delete(node.left, val);
+        } else if (node.val < val) {
+            delete(node.right, val);
+        } else {
+            if (node.left == null && node.right == null) {
+                node = null;
+                return;
+            } else if (node.left == null) {
+                node = node.right;
+                return;
+            } else if (node.right == null) {
+                node = node.left;
+                return;
+            } else {
+                TreeNode leftMaxNode = findMax(node.left);
+                TreeNode temp = new TreeNode(leftMaxNode.val);
+                temp.right = node.right;
+                temp.left = node.left;
+                temp.val = leftMaxNode.val;
+                node = temp;
+                System.out.println(node.val);
+                delete(node.left, leftMaxNode.val);
+                node.val = 123;
+            }
+        }
+    }
+
     public static void main(String... args) {
         int[] arr = new int[]{4, 5, 2, 3, 1, 8, 9, 7, 6};
         TreeNode node = build(arr);
@@ -118,5 +155,11 @@ public class TreeTest {
         System.out.println("num " + num + " is Leaf is " + isLeaf);
         isLeaf = isLeaf(node, 4);
         System.out.println("num " + num + " is Leaf is " + isLeaf);
+
+        TreeNode maxNode = findMax(node.right.right.left);
+        System.out.println(String.format("max val under node %d is %d", node.val, maxNode.val));
+
+        delete(node, 8);
+        print(node);
     }
 }
