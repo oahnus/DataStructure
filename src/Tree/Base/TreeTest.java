@@ -1,6 +1,7 @@
 package Tree.Base;
 
 
+import org.junit.Test;
 
 /**
  * Created by oahnus on 2018/3/21
@@ -102,36 +103,94 @@ public class TreeTest {
         return node.right == null ? node : findMax(node.right);
     }
 
-    public static void delete(TreeNode node, int val) {
+    public static TreeNode findMix(TreeNode node) {
         if (node == null) {
-            return;
+            return null;
+        }
+        return node.left == null ? node : findMix(node.left);
+    }
+
+    /**
+     * @param node root node
+     * @param val target val
+     * @return target node's parent node
+     */
+    public static TreeNode findParent(TreeNode node, int val){
+        if (node == null || node.val == val) {
+            return null;
         }
         if (node.val > val) {
-            delete(node.left, val);
-        } else if (node.val < val) {
-            delete(node.right, val);
+            return node.left != null && node.left.val == val ? node : findParent(node.left, val);
         } else {
-            if (node.left == null && node.right == null) {
-                node = null;
-                return;
-            } else if (node.left == null) {
+            return node.right != null && node.right.val == val ? node : findParent(node.right, val);
+        }
+    }
+
+    /**
+     * delete node
+     * @param node root node
+     * @param val target node val
+     * @return new root node
+     */
+    public static TreeNode delete(TreeNode node, int val) {
+        if (node == null) {
+            return null;
+        }
+        TreeNode parentNode = findParent(node, val);
+        // delete root node
+        if (parentNode == null) {
+            if (node.left == null) {
                 node = node.right;
-                return;
-            } else if (node.right == null) {
-                node = node.left;
-                return;
+                return node;
             } else {
                 TreeNode leftMaxNode = findMax(node.left);
                 TreeNode temp = new TreeNode(leftMaxNode.val);
-                temp.right = node.right;
                 temp.left = node.left;
-                temp.val = leftMaxNode.val;
+                temp.right = node.right;
                 node = temp;
-                System.out.println(node.val);
-                delete(node.left, leftMaxNode.val);
-                node.val = 123;
+                node.left = delete(node.left, leftMaxNode.val);
+                return node;
             }
         }
+        // target node is parentNode's left node
+        if (parentNode.left != null && parentNode.left.val == val) {
+            TreeNode targetNode = parentNode.left;
+            if (targetNode.left == null && targetNode.right == null) {
+                parentNode.left = null;
+            } else if (targetNode.left == null) {
+                parentNode.left = targetNode.right;
+            } else if (targetNode.right == null){
+                parentNode.left = targetNode.left;
+            } else {
+                // use targetNode's max left node replace targetNode
+                TreeNode leftMaxNode = findMax(targetNode.left);
+                TreeNode temp = new TreeNode(leftMaxNode.val);
+                temp.left = targetNode.left;
+                temp.right = targetNode.right;
+                parentNode.left = temp;
+                temp.right = delete(temp.right, leftMaxNode.val);
+            }
+        }
+        // target node is parentNode's right node
+        if (parentNode.right != null && parentNode.right.val == val) {
+            TreeNode targetNode = parentNode.right;
+            if (targetNode.left == null && targetNode.right == null) {
+                parentNode.right = null;
+            } else if (targetNode.left == null) {
+                parentNode.right = targetNode.right;
+            } else if (targetNode.right == null){
+                parentNode.right = targetNode.left;
+            } else {
+                // use targetNode's max left node replace targetNode
+                TreeNode leftMaxNode = findMax(targetNode.left);
+                TreeNode temp = new TreeNode(leftMaxNode.val);
+                temp.left = targetNode.left;
+                temp.right = targetNode.right;
+                parentNode.right = temp;
+                temp.left = delete(temp.left, leftMaxNode.val);
+            }
+        }
+        return node;
     }
 
     public static void main(String... args) {
@@ -156,10 +215,19 @@ public class TreeTest {
         isLeaf = isLeaf(node, 4);
         System.out.println("num " + num + " is Leaf is " + isLeaf);
 
-        TreeNode maxNode = findMax(node.right.right.left);
-        System.out.println(String.format("max val under node %d is %d", node.val, maxNode.val));
+        TreeNode maxNode = findMax(node.right);
+        System.out.println(String.format("max val under node %d is %d", node.right.val, maxNode.val));
 
-        delete(node, 8);
+        int targetNodeVal = 6;
+        TreeNode parent = findParent(node, targetNodeVal);
+        System.out.println(String.format("node %s's parent node is %s", targetNodeVal, parent != null ? parent.val : "none"));
+
+        node = delete(node, 8);
+        System.out.print("delete node 8 :");
+        print(node);
+        System.out.println();
+        System.out.print("delete node 4");
+        node = delete(node, 4);
         print(node);
     }
 }
