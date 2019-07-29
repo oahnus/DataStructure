@@ -4,6 +4,8 @@ package com.github.oahnus.datastructure.Graph;
  * Created by oahnus on 2016/8/6.
  */
 
+import com.sun.webkit.ContextMenu;
+
 /**
  * use Prim algorithm to find minimal spanning tree
  */
